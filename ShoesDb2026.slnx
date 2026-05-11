@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="ShoesDb2026.Consola/ShoesDb2026.Consola.csproj" />
+  <Project Path="ShoesDb2026.Data/ShoesDb2026.Data.csproj" />
+  <Project Path="ShoesDb2026.Entities/ShoesDb2026.Entities.csproj" />
+  <Project Path="ShoesDb2026.IoC/ShoesDb2026.IoC.csproj" />
+  <Project Path="ShoesDb2026.Service/ShoesDb2026.Service.csproj" />
+</Solution>
