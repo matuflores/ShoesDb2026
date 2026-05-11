@@ -6,5 +6,8 @@ namespace ShoesDb2026.Entities
 {
     public class Genre
     {
+        public int GenreId { get; set; }
+        public string GenreName { get; set; } = null!;
+        public bool Active { get; set; }
     }
 }
