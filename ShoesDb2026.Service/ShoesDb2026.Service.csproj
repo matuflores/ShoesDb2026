@@ -10,7 +10,10 @@
     <Folder Include="DTOs\" />
     <Folder Include="Mappers\" />
     <Folder Include="Common\" />
-    <Folder Include="Validators\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
   </ItemGroup>
 
   <ItemGroup>

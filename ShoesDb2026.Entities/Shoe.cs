@@ -18,6 +18,5 @@ namespace ShoesDb2026.Entities
         public Sport Sport { get; set; } = null!;
         public int GenreId { get; set; }
         public Genre Genre { get; set; } = null!;
-        //chequear
     }
 }
