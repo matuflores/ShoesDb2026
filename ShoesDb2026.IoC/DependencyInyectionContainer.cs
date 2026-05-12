@@ -39,7 +39,7 @@ namespace ShoesDb2026.IoC
             services.AddScoped<ISportsRepository, SportRepository>();
             services.AddScoped<ISportService, SportService>();
             services.AddScoped<IValidator<Sport>, SportValidator>();
-
+            
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services.BuildServiceProvider();
