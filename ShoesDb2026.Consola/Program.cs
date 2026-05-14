@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ShoesDb2026.Entities;
 using ShoesDb2026.IoC;
 using ShoesDb2026.Service.DTOs.Brand;
+using ShoesDb2026.Service.DTOs.Sport;
 using ShoesDb2026.Service.Interfaces;
 
 namespace ShoesDb2026.Consola
@@ -20,7 +21,7 @@ namespace ShoesDb2026.Consola
                 Console.WriteLine("1. Brands");
                 Console.WriteLine("2. Sports");
                 Console.WriteLine("3. Size");
-                Console.WriteLine("4. Sport Shoes");
+                Console.WriteLine("4. Shoes");
                 Console.WriteLine("0. Exit");
 
                 Console.Write("Select option: ");
@@ -76,15 +77,15 @@ namespace ShoesDb2026.Consola
                             break;
 
                         case "2":
-                            //AddSport(service);
+                            AddSport(service);
                             break;
 
                         case "3":
-                            //DeleteSport(service);
+                            DeleteSport(service);
                             break;
 
                         case "4":
-                            //UpdateSport(service);
+                            UpdateSport(service);
                             break;
 
                         case "0":
@@ -95,6 +96,110 @@ namespace ShoesDb2026.Consola
             }
         }
 
+        private static void UpdateSport(ISportService service)
+        {
+            Console.Clear();
+            Console.WriteLine("UPDATE SPORT:");
+
+            ShowSports(service);
+
+            Console.WriteLine("SELECT ID SPORT TO UPDATE:");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+
+            var sportUpdate = service.GetForUpdate(id);
+            if (sportUpdate.IsFailure)
+            {
+                ShowErrors(sportUpdate.Errors);
+                return;
+            }
+
+            var sport = sportUpdate.Value!;
+            Console.WriteLine("NEW SPORT NAME: ");
+            var newSportName = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(newSportName))
+            {
+                sport.SportName = newSportName;
+            }
+            var result = service.Update(sport);
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+            }
+            else
+            {
+                Console.WriteLine("SPORT UPDATED SUCCESSFULLY!");
+            }
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadLine();
+        }
+
+        private static void DeleteSport(ISportService service)
+        {
+            Console.Clear();
+            Console.WriteLine("DELETE SPORT:");
+            ShowSports(service);
+
+            Console.WriteLine("SELECT ID SPORT TO DELETE:");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+
+            Console.WriteLine("ARE YOU SURE TO DELETE SPORT? (Y/N)");
+            var confirm = Console.ReadLine();
+            if (confirm?.ToUpper() != "Y")
+            {
+                Console.WriteLine("DELETE CANCELLED!");
+                Console.ReadLine();
+                return;
+            }
+
+            var sportResult = service.Delete(id);
+
+            if (sportResult.IsFailure)
+            {
+                ShowErrors(sportResult.Errors);
+            }
+            else
+            {
+                Console.WriteLine("SPORT DELETED SUCCESSFULLY!");
+            }
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadLine();
+        }
+
+        private static void AddSport(ISportService service)
+        {
+            Console.Clear();
+            Console.WriteLine("ADD SPORT:");
+
+            var dto = new SportCreateDto();
+
+            Console.WriteLine("SPORT NAME: ");
+            dto.SportName = Console.ReadLine() ?? "";
+
+            var result = service.Add(dto);
+
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine("SPORT ADDED SUCCESSFULLY!");
+            }
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadKey();
+        }
+
         private static void ListSports(ISportService service)
         {
             Console.Clear();
@@ -102,6 +207,22 @@ namespace ShoesDb2026.Consola
             ShowSports(service);
             Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
             Console.ReadKey();
+        }
+
+        private static void ShowSports(ISportService service)
+        {
+            var sportsResult = service.GetAll();
+            if (sportsResult.IsFailure)
+            {
+                ShowErrors(sportsResult.Errors);
+                return;
+            }
+
+            var sports = sportsResult.Value;
+            foreach (var sport in sports!)
+            {
+                Console.WriteLine($"ID: {sport.SportId} -- Name: {sport.SportName}");
+            }
         }
 
         private static void BrandsMenu()
