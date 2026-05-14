@@ -13,7 +13,7 @@ namespace ShoesDb2026.Data.Interfaces
         void Delete(int id);
         void Update(Size size);
         void Add(Size size);
-        bool ExistSameName(string sizeName, int? sizeId = null);
+        bool ExistSameName(decimal sizeNumber, int? sizeId = null);
 
         bool HasShoes(int sizeId);
     }

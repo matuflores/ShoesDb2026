@@ -20,7 +20,7 @@ namespace ShoesDb2026.Consola
                 Console.WriteLine("SHOES MANAGEMENT:");
                 Console.WriteLine("1. Brands");
                 Console.WriteLine("2. Sports");
-                Console.WriteLine("3. Size");
+                Console.WriteLine("3. Sizes");
                 Console.WriteLine("4. Shoes");
                 Console.WriteLine("0. Exit");
 
@@ -37,7 +37,7 @@ namespace ShoesDb2026.Consola
                         SportsMenu();
                         break;
                     case "3":
-                        //SizesMenu();
+                        SizesMenu();
                         break;
                     case "4":
                         //ShoesMenu();
@@ -47,6 +47,78 @@ namespace ShoesDb2026.Consola
                 }
 
             } while (true);
+        }
+
+        private static void SizesMenu()
+        {
+            using (var scope = provider.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<ISizeService>();
+
+                do
+                {
+                    Console.Clear();
+
+                    Console.WriteLine("SIZES SECTION");
+                    Console.WriteLine("1 - List Sizes");
+                    Console.WriteLine("2 - Add Size");
+                    Console.WriteLine("3 - Delete Size");
+                    Console.WriteLine("4 - Update Size");
+                    Console.WriteLine("0 - Back");
+
+                    Console.Write("Select option: ");
+
+                    var op = Console.ReadLine();
+
+                    switch (op)
+                    {
+                        case "1":
+                            ListSizes(service);
+                            break;
+
+                        case "2":
+                            //AddSize(service);
+                            break;
+
+                        case "3":
+                            //DeleteSize(service);
+                            break;
+
+                        case "4":
+                            //UpdateSize(service);
+                            break;
+
+                        case "0":
+                            return;
+                    }
+
+                } while (true);
+            }
+        }
+
+        private static void ListSizes(ISizeService service)
+        {
+            Console.Clear();
+            Console.WriteLine("LIST OF SIZES:");
+            ShowSizes(service);
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadKey();
+        }
+
+        private static void ShowSizes(ISizeService service)
+        {
+            var sizeResult = service.GetAll();
+            if (sizeResult.IsFailure)
+            {
+                ShowErrors(sizeResult.Errors);
+                return;
+            }
+
+            var sizes = sizeResult.Value;
+            foreach (var size in sizes!)
+            {
+                Console.WriteLine($"ID: {size.SizeId} -- Number: {size.SizeNumber}");
+            }
         }
 
         private static void SportsMenu()
