@@ -33,19 +33,75 @@ namespace ShoesDb2026.Consola
                         BrandsMenu();
                         break;
                     case "2":
-                        //SportsMenu();
+                        SportsMenu();
                         break;
                     case "3":
-                        //SizeMenu();
+                        //SizesMenu();
                         break;
                     case "4":
-                        //SportShoesMenu();
+                        //ShoesMenu();
                         break;
                     case "0":
                         return;
                 }
 
             } while (true);
+        }
+
+        private static void SportsMenu()
+        {
+            using (var scope = provider.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<ISportService>();
+
+                do
+                {
+                    Console.Clear();
+
+                    Console.WriteLine("SPORTS SECTION");
+                    Console.WriteLine("1 - List Sports");
+                    Console.WriteLine("2 - Add Sport");
+                    Console.WriteLine("3 - Delete Sport");
+                    Console.WriteLine("4 - Update Sport");
+                    Console.WriteLine("0 - Back");
+
+                    Console.Write("Select option: ");
+
+                    var op = Console.ReadLine();
+
+                    switch (op)
+                    {
+                        case "1":
+                            ListSports(service);
+                            break;
+
+                        case "2":
+                            //AddSport(service);
+                            break;
+
+                        case "3":
+                            //DeleteSport(service);
+                            break;
+
+                        case "4":
+                            //UpdateSport(service);
+                            break;
+
+                        case "0":
+                            return;
+                    }
+
+                } while (true);
+            }
+        }
+
+        private static void ListSports(ISportService service)
+        {
+            Console.Clear();
+            Console.WriteLine("LIST OF SPORTS:");
+            ShowSports(service);
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadKey();
         }
 
         private static void BrandsMenu()
