@@ -20,13 +20,13 @@ namespace ShoesDb2026.Consola
                 Console.Clear();
 
                 Console.WriteLine("SHOES MANAGEMENT:");
-                Console.WriteLine("1. Brands");
-                Console.WriteLine("2. Sports");
-                Console.WriteLine("3. Sizes");
-                Console.WriteLine("4. Shoes");
-                Console.WriteLine("0. Exit");
+                Console.WriteLine("1. BRANDS");
+                Console.WriteLine("2. SPORTS");
+                Console.WriteLine("3. SIZES");
+                Console.WriteLine("4. SHOES");
+                Console.WriteLine("0. EXIT");
 
-                Console.Write("Select option: ");
+                Console.Write("SELECT OPTION: ");
 
                 var op = Console.ReadLine();
 
@@ -42,13 +42,67 @@ namespace ShoesDb2026.Consola
                         SizesMenu();
                         break;
                     case "4":
-                        //ShoesMenu();
+                        ShoesMenu();
                         break;
                     case "0":
                         return;
                 }
 
             } while (true);
+        }
+
+        private static void ShoesMenu()
+        {
+            using (var scope = provider.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<IShoeService>();
+                var sizeService = scope.ServiceProvider.GetRequiredService<ISizeService>();
+                var sportService = scope.ServiceProvider.GetRequiredService<ISportService>();
+                var brandService = scope.ServiceProvider.GetRequiredService<IBrandService>();
+
+
+                do
+                {
+                    Console.Clear();
+
+                    Console.WriteLine("SHOES SECTION");
+                    Console.WriteLine("1 - LIST SHOES");
+                    Console.WriteLine("2 - ADD SHOE");
+                    Console.WriteLine("3 - DELETE SHOE");
+                    Console.WriteLine("4 - UPDATE SHOE");
+                    Console.WriteLine("5 - DETAILS SHOE");
+                    Console.WriteLine("0 - BACK");
+
+                    Console.Write("SELECT OPTION: ");
+
+                    var op = Console.ReadLine();
+
+                    switch (op)
+                    {
+                        case "1":
+                            //ListShoes(service);
+                            break;
+
+                        case "2":
+                            //AddSize(service);
+                            break;
+
+                        case "3":
+                            //DeleteSize(service);
+                            break;
+
+                        case "4":
+                            //UpdateSize(service);
+                            break;
+                        case "5":
+                            //DetailsShoes(service);
+                            break;
+                        case "0":
+                            return;
+                    }
+
+                } while (true);
+            }
         }
 
         private static void SizesMenu()
