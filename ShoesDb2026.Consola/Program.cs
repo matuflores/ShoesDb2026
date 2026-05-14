@@ -84,7 +84,7 @@ namespace ShoesDb2026.Consola
                             break;
 
                         case "4":
-                            //UpdateBrand(service);
+                            UpdateBrand(service);
                             break;
 
                         case "0":
@@ -93,6 +93,56 @@ namespace ShoesDb2026.Consola
 
                 } while (true);
             }
+        }
+
+        private static void UpdateBrand(IBrandService service)
+        {
+            Console.Clear();
+            Console.WriteLine("UPDATE BRAND:");
+
+            ShowBrands(service);
+
+            Console.WriteLine("SELECT ID BRAND TO UPDATE:");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+
+            var brandUpdate = service.GetForUpdate(id);
+            if (brandUpdate.IsFailure)
+            {
+                ShowErrors(brandUpdate.Errors);
+                return;
+            }
+
+            var brand = brandUpdate.Value!;
+            Console.WriteLine("NEW BRAND NAME: ");
+            var newBrandName = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(newBrandName))
+            {
+                brand.BrandName = newBrandName;
+            }
+
+            Console.WriteLine("NEW IMAGE URL: ");
+            var newImageUrl = Console.ReadLine();
+            if (!string.IsNullOrEmpty(newImageUrl))
+            {
+                brand.ImageUrl = newImageUrl;
+            }
+
+            var result = service.Update(brand);
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+            }
+            else
+            {
+                Console.WriteLine("BRAND UPDATED SUCCESSFULLY!");
+            }
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadLine();
         }
 
         private static void DeleteBrand(IBrandService service)
@@ -131,16 +181,6 @@ namespace ShoesDb2026.Consola
             }
             Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
             Console.ReadLine();
-            //var brandsResult = service.GetAll();
-            //if (brandsResult.IsFailure)
-            //{
-            //    ShowErrors(brandsResult.Errors);
-            //    return;
-            //}
-            //foreach (var brand in brandsResult.Value!)
-            //{
-            //    Console.WriteLine($"ID: {brand.BrandId} -- Name: {brand.BrandName}");
-            //}
 
         }
 
