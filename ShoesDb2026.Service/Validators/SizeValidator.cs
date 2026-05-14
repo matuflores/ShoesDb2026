@@ -9,12 +9,12 @@ namespace ShoesDb2026.Service.Validators
     public class SizeValidator:AbstractValidator<Size>
     {
         public SizeValidator() 
-        { 
+        {
             RuleFor(sz => sz.SizeNumber)
-                .GreaterThan(20).WithMessage("Size value must be greater than zero.")
+                .GreaterThan(0).WithMessage("Size value must be greater than zero.")
                 .LessThan(55).WithMessage("Size value is unrealistically high.");
 
-            RuleFor(sz => sz.Active).NotNull().WithMessage("Activity status must be defined.");
+            RuleFor(sz => sz.Active).NotNull().WithMessage("Activity status must be defined.");//aca lo que hago es
     }
     }
 }

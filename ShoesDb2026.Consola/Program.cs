@@ -2,7 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using ShoesDb2026.Entities;
 using ShoesDb2026.IoC;
+using ShoesDb2026.Service.Common;
 using ShoesDb2026.Service.DTOs.Brand;
+using ShoesDb2026.Service.DTOs.Size;
 using ShoesDb2026.Service.DTOs.Sport;
 using ShoesDb2026.Service.Interfaces;
 
@@ -77,15 +79,15 @@ namespace ShoesDb2026.Consola
                             break;
 
                         case "2":
-                            //AddSize(service);
+                            AddSize(service);
                             break;
 
                         case "3":
-                            //DeleteSize(service);
+                            DeleteSize(service);
                             break;
 
                         case "4":
-                            //UpdateSize(service);
+                            UpdateSize(service);
                             break;
 
                         case "0":
@@ -96,17 +98,128 @@ namespace ShoesDb2026.Consola
             }
         }
 
+        private static void UpdateSize(ISizeService service)
+        {
+            Console.Clear();
+            Console.WriteLine("UPDATE SIZE:");
+
+            ShowSizes(service);
+
+            Console.WriteLine("SELECT ID SIZE TO UPDATE:");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+
+            var sizeUpdate = service.GetForUpdate(id);
+            if (sizeUpdate.IsFailure)
+            {
+                ShowErrors(sizeUpdate.Errors);
+                return;
+            }
+
+            var size = sizeUpdate.Value!;
+            Console.WriteLine("NEW SIZE NUMBER: ");
+            if(decimal.TryParse(Console.ReadLine(), out decimal newSizeNumber))
+            {
+                size.SizeNumber = newSizeNumber;
+            }
+            else
+            {
+                Console.WriteLine("INVALID SIZE NUMBER!");
+                Console.ReadLine();
+                return;
+            }
+
+            var result = service.Update(size);
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+            }
+            else
+            {
+                Console.WriteLine("SIZE UPDATED SUCCESSFULLY!");
+            }
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadLine();
+        }
+
+        private static void DeleteSize(ISizeService service)
+        {
+            Console.Clear();
+            Console.WriteLine("DELETE SIZE:");
+            ShowSizes(service);
+
+            Console.WriteLine("SELECT ID SIZE TO DELETE:");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+
+            Console.WriteLine("ARE YOU SURE TO DELETE SIZE? (Y/N)");
+            var confirm = Console.ReadLine();
+            if (confirm?.ToUpper() != "Y")
+            {
+                Console.WriteLine("DELETE CANCELLED!");
+                Console.ReadLine();
+                return;
+            }
+
+            var sizeResult = service.Delete(id);
+
+            if (sizeResult.IsFailure)
+            {
+                ShowErrors(sizeResult.Errors);
+            }
+            else
+            {
+                Console.WriteLine("SIZE DELETED SUCCESSFULLY!");
+            }
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadLine();
+        }
+
+        private static void AddSize(ISizeService service)
+        {
+            Console.Clear();
+            Console.WriteLine("ADD SIZE:");
+
+            var dto = new SizeCreateDto();
+
+            Console.WriteLine("SIZE NUMBER: ");
+            dto.SizeNumber = decimal.TryParse(Console.ReadLine(), out decimal sizeNumber) ? sizeNumber : 0;//aca lo que estoy haciendo es intentar parsear el input del usuario a decimal, si no se puede parsear, asigno 0 por defecto
+
+            var result = service.Add(dto);
+
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine("SIZE ADDED SUCCESSFULLY!");
+            }
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadKey();
+        }
+
         private static void ListSizes(ISizeService service)
         {
             Console.Clear();
             Console.WriteLine("LIST OF SIZES:");
             ShowSizes(service);
             Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
-            Console.ReadKey();
+            Console.ReadLine();
         }
 
         private static void ShowSizes(ISizeService service)
         {
+            
             var sizeResult = service.GetAll();
             if (sizeResult.IsFailure)
             {

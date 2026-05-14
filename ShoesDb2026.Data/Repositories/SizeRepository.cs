@@ -29,7 +29,8 @@ namespace ShoesDb2026.Data.Repositories
 
         public bool ExistSameName(decimal sizeNumber, int? sizeId = null)
         {
-            return _context.Sizes.Any(s => s.SizeNumber == sizeNumber && s.SizeId != sizeId);
+            //return _context.Sizes.Any(s => s.SizeNumber == sizeNumber && s.SizeId != sizeId);
+            return _context.Sizes.Any(s => s.SizeNumber == sizeNumber && (sizeId ==null || s.SizeId!= sizeId));
         }
 
         public List<Size> GetAll()
