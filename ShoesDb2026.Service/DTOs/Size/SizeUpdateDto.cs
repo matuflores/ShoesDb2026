@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ShoesDb2026.Entities
+namespace ShoesDb2026.Service.DTOs.Size
 {
-    public class Size
+    public class SizeUpdateDto
     {
         public int SizeId { get; set; }
         public decimal SizeNumber { get; set; }
-        public bool Active { get; set; } = true;
     }
 }
