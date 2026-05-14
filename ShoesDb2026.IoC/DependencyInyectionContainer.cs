@@ -25,7 +25,7 @@ namespace ShoesDb2026.IoC
             services.AddScoped<IValidator<Brand>, BrandValidator>();
 
             services.AddScoped<IGenresRepository, GenreRepository>();
-            services.AddScoped<IGenreService, GenreService>();
+            //services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IValidator<Genre>, GenreValidator>();
 
             services.AddScoped<IShoesRepository, ShoeRepository>();
