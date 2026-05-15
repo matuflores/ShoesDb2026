@@ -73,7 +73,9 @@ namespace ShoesDb2026.Service.Services
 
         public Result<List<SizeListDto>> GetAll()
         {
-            var sizes = _uow.Sizes.GetAll().Select(SizeMapper.ToListDto).ToList();
+            var sizes = _uow.Sizes.GetAll()
+                .Select(SizeMapper.ToListDto)
+                .ToList();
             return Result<List<SizeListDto>>.Success(sizes);
         }
 

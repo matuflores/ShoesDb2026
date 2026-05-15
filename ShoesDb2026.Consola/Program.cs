@@ -735,6 +735,7 @@ namespace ShoesDb2026.Consola
 
         private static void SizesMenu()
         {
+            
             using (var scope = provider.CreateScope())
             {
                 var service = scope.ServiceProvider.GetRequiredService<ISizeService>();
@@ -1073,7 +1074,7 @@ namespace ShoesDb2026.Consola
             Console.WriteLine("LIST OF SPORTS:");
             ShowSports(service);
             Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
-            Console.ReadKey();
+            Console.ReadLine();
         }
 
         private static void ShowSports(ISportService service)
@@ -1261,7 +1262,7 @@ namespace ShoesDb2026.Consola
             Console.WriteLine("LIST OF BRANDS:");
             ShowBrands(service);
             Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
-            Console.ReadKey();
+            Console.ReadLine();
         }
 
         private static void ShowBrands(IBrandService service)
