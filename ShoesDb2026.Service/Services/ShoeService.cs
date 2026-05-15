@@ -99,21 +99,39 @@ namespace ShoesDb2026.Service.Services
 
         public Result<List<ShoeListDto>> GetByBrand(int brandId)
         {
-            var shoes=_uow.Shoes.GetByBrand(brandId)
-                .Select(ShoeMapper.ToListDto)
-                .ToList();
+            //var shoes=_uow.Shoes.GetByBrand(brandId)
+            //    .Select(ShoeMapper.ToListDto)
+            //    .ToList();
+            //return Result<List<ShoeListDto>>.Success(shoes);
+            var shoes=_uow.Shoes.GetByBrand(brandId).Select(ShoeMapper.ToListDto).ToList();
+            if (shoes == null || !shoes.Any())
+            {
+                return Result<List<ShoeListDto>>.Failure("NO SHOES FOUND FOR THE SPECIFIED BRAND.");
+            }
             return Result<List<ShoeListDto>>.Success(shoes);
         }
 
         public Result<List<ShoeListDto>> GetBySize(int sizeId)
         {
+            //var shoes = _uow.Shoes.GetBySize(sizeId).Select(ShoeMapper.ToListDto).ToList();
+            //return Result<List<ShoeListDto>>.Success(shoes);
             var shoes = _uow.Shoes.GetBySize(sizeId).Select(ShoeMapper.ToListDto).ToList();
+            if (shoes == null || !shoes.Any())
+            {
+                return Result<List<ShoeListDto>>.Failure("NO SHOES FOUND FOR THE SPECIFIED SIZE.");
+            }
             return Result<List<ShoeListDto>>.Success(shoes);
         }
 
         public Result<List<ShoeListDto>> GetBySport(int sportId)
         {
+            //var shoes = _uow.Shoes.GetBySport(sportId).Select(ShoeMapper.ToListDto).ToList();
+            //return Result<List<ShoeListDto>>.Success(shoes);
             var shoes = _uow.Shoes.GetBySport(sportId).Select(ShoeMapper.ToListDto).ToList();
+            if (shoes == null || !shoes.Any())
+            {
+                return Result<List<ShoeListDto>>.Failure("NO SHOES FOUND FOR THE SPECIFIED SPORT.");
+            }
             return Result<List<ShoeListDto>>.Success(shoes);
         }
 

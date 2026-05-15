@@ -218,62 +218,180 @@ namespace ShoesDb2026.Consola
 
         private static void FilterBySize(IShoeService service, ISizeService sizeService)
         {
-            Console.Clear();
-            Console.WriteLine("FILTER SHOES BY SIZE:");
-            Console.WriteLine();
-            ShowSizes(sizeService);
+            //Console.Clear();
+            //Console.WriteLine("FILTER SHOES BY SIZE:");
+            //Console.WriteLine();
+            //ShowSizes(sizeService);
 
-            Console.Write("SELECT SIZE ID (0 TO QUIT):");
-            int sizeId = int.Parse(Console.ReadLine()!);
-            if (sizeId == 0) return;
-            var result = service.GetBySize(sizeId);
-            if (result.IsFailure)
+            //Console.Write("SELECT SIZE ID (0 TO QUIT):");
+            //int sizeId = int.Parse(Console.ReadLine()!);
+            //if (sizeId == 0) return;
+            //var result = service.GetBySize(sizeId);
+            //if (result.IsFailure)
+            //{
+            //    ShowErrors(result.Errors);
+            //    return;
+            //}
+            //ShowShoesFilter(result.Value!);
+            //Console.ReadLine();
+            while (true)
             {
-                ShowErrors(result.Errors);
-                return;
+                Console.Clear();
+                Console.WriteLine("FILTER SHOES BY SPORT:");
+                Console.WriteLine();
+                ShowSizes(sizeService);
+
+                Console.Write("SELECT SIZE ID (0 TO QUIT):");
+                string selection = Console.ReadLine()!;
+                if (!int.TryParse(selection, out int sizeId))
+                {
+                    Console.WriteLine("INVALID ID! PLEASE ENTER A VALID NUMBER.");
+                    Console.WriteLine("PRESS ANY KEY TO RESTART...");
+                    Console.ReadKey();
+                    continue;
+                }
+
+                if (sizeId == 0) break;
+
+                var result = service.GetBySize(sizeId);
+
+                if (result.IsFailure)
+                {
+                    ShowErrors(result.Errors);
+                    continue;
+                }
+                Console.Clear();
+                ShowShoesFilter(result.Value!);
+                Console.WriteLine("DO YOU WANT TO MAKE NEW FILTER? (Y/N)");
+                var response = Console.ReadLine();
+                if (response?.ToUpper() != "Y")
+                {
+                    break;
+                }
             }
-            ShowShoesFilter(result.Value!);
-            Console.ReadLine();
+            Console.WriteLine("FILTERING FINISHED.");
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadKey();
         }
 
         private static void FilterBySport(IShoeService service, ISportService sportService)
         {
-            Console.Clear();
-            Console.WriteLine("FILTER SHOES BY SPORT:");
-            Console.WriteLine();
-            ShowSports(sportService);
+            //Console.Clear();
+            //Console.WriteLine("FILTER SHOES BY SPORT:");
+            //Console.WriteLine();
+            //ShowSports(sportService);
 
-            Console.Write("SELECT SPORT ID (0 TO QUIT):");
-            int sportId = int.Parse(Console.ReadLine()!);
-            if (sportId == 0) return;
-            var result = service.GetBySport(sportId);
-            if (result.IsFailure)
+            //Console.Write("SELECT SPORT ID (0 TO QUIT):");
+            //int sportId = int.Parse(Console.ReadLine()!);
+            //if (sportId == 0) return;
+            //var result = service.GetBySport(sportId);
+            //if (result.IsFailure)
+            //{
+            //    ShowErrors(result.Errors);
+            //    return;
+            //}
+            //ShowShoesFilter(result.Value!);
+            //Console.ReadLine();
+            while (true)
             {
-                ShowErrors(result.Errors);
-                return;
+                Console.Clear();
+                Console.WriteLine("FILTER SHOES BY SPORT:");
+                Console.WriteLine();
+                ShowSports(sportService);
+
+                Console.Write("SELECT SPORT ID (0 TO QUIT):");
+                string selection = Console.ReadLine()!;
+                if (!int.TryParse(selection, out int sportId))
+                {
+                    Console.WriteLine("INVALID ID! PLEASE ENTER A VALID NUMBER.");
+                    Console.WriteLine("PRESS ANY KEY TO RESTART...");
+                    Console.ReadKey();
+                    continue;
+                }
+
+                if (sportId == 0) break;
+
+                var result = service.GetBySport(sportId);
+
+                if (result.IsFailure)
+                {
+                    ShowErrors(result.Errors);
+                    continue;
+                }
+                Console.Clear();
+                ShowShoesFilter(result.Value!);
+                Console.WriteLine("DO YOU WANT TO MAKE NEW FILTER? (Y/N)");
+                var response = Console.ReadLine();
+                if (response?.ToUpper() != "Y")
+                {
+                    break;
+                }
             }
-            ShowShoesFilter(result.Value!);
-            Console.ReadLine();
+            Console.WriteLine("FILTERING FINISHED.");
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadKey();
         }
 
         private static void FilterByBrand(IShoeService service, IBrandService brandService)
         {
-            Console.Clear();
-            Console.WriteLine("FILTER SHOES BY BRAND:");
-            Console.WriteLine();
-            ShowBrands(brandService);
+            //FUNCIONA DE ACA------------------------------------------------------------------------------
+            //Console.Clear();
+            //Console.WriteLine("FILTER SHOES BY BRAND:");
+            //Console.WriteLine();
+            //ShowBrands(brandService);
 
-            Console.Write("SELECT BRAND ID (0 TO QUIT):");
-            int brandId = int.Parse(Console.ReadLine()!);
-            if (brandId == 0) return;
-            var result = service.GetByBrand(brandId);
-            if(result.IsFailure)
+            //Console.Write("SELECT BRAND ID (0 TO QUIT):");
+            //int brandId = int.Parse(Console.ReadLine()!);
+            //if (brandId == 0) return;
+            //var result = service.GetByBrand(brandId);
+            //if(result.IsFailure)
+            //{
+            //    ShowErrors(result.Errors);
+            //    return;
+            //}
+            //ShowShoesFilter(result.Value!);
+            //Console.ReadLine();
+            //HASTA ACA-------------------------------------------------------------------------------------
+            
+
+            while (true)
             {
-                ShowErrors(result.Errors);
-                return;
+                Console.Clear();
+                Console.WriteLine("FILTER SHOES BY BRAND:");
+                Console.WriteLine();
+                ShowBrands(brandService);
+
+                Console.Write("SELECT BRAND ID (0 TO QUIT):");
+                string selection =Console.ReadLine()!;
+                if(!int.TryParse(selection, out int brandId))
+                {
+                    Console.WriteLine("INVALID ID! PLEASE ENTER A VALID NUMBER.");
+                    Console.WriteLine("PRESS ANY KEY TO RESTART...");
+                    Console.ReadKey();
+                    continue;
+                }
+
+                if (brandId == 0) break;
+
+                var result = service.GetByBrand(brandId);
+
+                if (result.IsFailure)
+                {
+                    ShowErrors(result.Errors);
+                    continue;
+                }
+                Console.Clear();
+                ShowShoesFilter(result.Value!);
+                Console.WriteLine("DO YOU WANT TO MAKE NEW FILTER? (Y/N)");
+                var response = Console.ReadLine();
+                if (response?.ToUpper() != "Y")
+                {
+                    break;
+                }
             }
-            ShowShoesFilter(result.Value!);
-            Console.ReadLine();
+            Console.WriteLine("FILTERING FINISHED.");
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadKey();
         }
 
         private static void ShowShoesFilter(List<ShoeListDto> shoeListDtos)
