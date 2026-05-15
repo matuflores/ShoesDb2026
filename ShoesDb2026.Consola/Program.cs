@@ -1,21 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
-using Microsoft.Extensions.DependencyInjection;
-using ShoesDb2026.Entities;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ShoesDb2026.IoC;
-using ShoesDb2026.Service.Common;
 using ShoesDb2026.Service.DTOs.Brand;
 using ShoesDb2026.Service.DTOs.Shoe;
 using ShoesDb2026.Service.DTOs.Size;
 using ShoesDb2026.Service.DTOs.Sport;
 using ShoesDb2026.Service.Interfaces;
-using ShoesDb2026.Service.Services;
-using System.Net.WebSockets;
 
 namespace ShoesDb2026.Consola
 {
     internal class Program
     {
-        static IServiceProvider provider= DependencyInyectionContainer.Configure();
+        static IServiceProvider provider = DependencyInyectionContainer.Configure();
         static void Main(string[] args)
         {
             do
@@ -49,6 +44,8 @@ namespace ShoesDb2026.Consola
                         break;
                     case "0":
                         return;
+                    default:
+                        break;
                 }
 
             } while (true);
@@ -106,6 +103,8 @@ namespace ShoesDb2026.Consola
                             break;
                         case "0":
                             return;
+                        default:
+                            break;
                     }
 
                 } while (true);
@@ -352,7 +351,7 @@ namespace ShoesDb2026.Consola
             //ShowShoesFilter(result.Value!);
             //Console.ReadLine();
             //HASTA ACA-------------------------------------------------------------------------------------
-            
+
 
             while (true)
             {
@@ -362,8 +361,8 @@ namespace ShoesDb2026.Consola
                 ShowBrands(brandService);
 
                 Console.Write("SELECT BRAND ID (0 TO QUIT):");
-                string selection =Console.ReadLine()!;
-                if(!int.TryParse(selection, out int brandId))
+                string selection = Console.ReadLine()!;
+                if (!int.TryParse(selection, out int brandId))
                 {
                     Console.WriteLine("INVALID ID! PLEASE ENTER A VALID NUMBER.");
                     Console.WriteLine("PRESS ANY KEY TO RESTART...");
@@ -396,7 +395,7 @@ namespace ShoesDb2026.Consola
 
         private static void ShowShoesFilter(List<ShoeListDto> shoeListDtos)
         {
-            
+
             foreach (var shoe in shoeListDtos)
             {
                 Console.WriteLine($"{"Id:",-10}{shoe.ShoeId}");
@@ -404,7 +403,7 @@ namespace ShoesDb2026.Consola
                 Console.WriteLine($"{"Brand:",-10}{shoe.BrandName}");
                 Console.WriteLine($"{"Sport:",-10}{shoe.SportName}");
                 Console.WriteLine($"{"Size:",-10}{shoe.SizeNumber}");
-                Console.WriteLine($"{"Price:",-10}{shoe.Price:C}" );
+                Console.WriteLine($"{"Price:",-10}{shoe.Price:C}");
                 Console.WriteLine("-----------------------------------------------------------------");
             }
         }
@@ -472,8 +471,8 @@ namespace ShoesDb2026.Consola
             Console.WriteLine("------------------------------------------------------------------------------");
             Console.WriteLine($"MODEL CURRENT: {dto.Model} ");
             Console.Write("ENTER NEW MODEL: ");
-            var model=Console.ReadLine();
-            if(!string.IsNullOrWhiteSpace(model))
+            var model = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(model))
             {
                 dto.Model = model;
             }
@@ -612,7 +611,7 @@ namespace ShoesDb2026.Consola
 
             Console.WriteLine("SELECT GENDER TO LIST:");
             var genreResult = service.GetGenres();
-            if (genreResult.IsSuccess) 
+            if (genreResult.IsSuccess)
             {
                 foreach (var genre in genreResult.Value!)
                 {
@@ -735,7 +734,7 @@ namespace ShoesDb2026.Consola
 
         private static void SizesMenu()
         {
-            
+
             using (var scope = provider.CreateScope())
             {
                 var service = scope.ServiceProvider.GetRequiredService<ISizeService>();
@@ -772,9 +771,10 @@ namespace ShoesDb2026.Consola
                         case "4":
                             UpdateSize(service);
                             break;
-
                         case "0":
                             return;
+                        default:
+                            break;
                     }
 
                 } while (true);
@@ -805,7 +805,7 @@ namespace ShoesDb2026.Consola
 
             var size = sizeUpdate.Value!;
             Console.WriteLine("NEW SIZE NUMBER: ");
-            if(decimal.TryParse(Console.ReadLine(), out decimal newSizeNumber))
+            if (decimal.TryParse(Console.ReadLine(), out decimal newSizeNumber))
             {
                 size.SizeNumber = newSizeNumber;
             }
@@ -897,12 +897,12 @@ namespace ShoesDb2026.Consola
             Console.WriteLine("LIST OF SIZES:");
             ShowSizes(service);
             Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
-            Console.ReadLine();
+            Console.ReadKey();
         }
 
         private static void ShowSizes(ISizeService service)
         {
-            
+
             var sizeResult = service.GetAll();
             if (sizeResult.IsFailure)
             {
@@ -958,6 +958,8 @@ namespace ShoesDb2026.Consola
 
                         case "0":
                             return;
+                        default:
+                            break;
                     }
 
                 } while (true);
@@ -1095,9 +1097,9 @@ namespace ShoesDb2026.Consola
 
         private static void BrandsMenu()
         {
-            using (var scope = provider.CreateScope()) 
-            { 
-                var service=scope.ServiceProvider.GetRequiredService<IBrandService>();
+            using (var scope = provider.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<IBrandService>();
 
                 do
                 {
@@ -1134,6 +1136,8 @@ namespace ShoesDb2026.Consola
 
                         case "0":
                             return;
+                        default:
+                            break;
                     }
 
                 } while (true);
@@ -1197,7 +1201,7 @@ namespace ShoesDb2026.Consola
             ShowBrands(service);
 
             Console.WriteLine("SELECT ID BRAND TO DELETE:");
-            if(!int.TryParse(Console.ReadLine(), out int id))
+            if (!int.TryParse(Console.ReadLine(), out int id))
             {
                 Console.WriteLine("INVALID ID!");
                 //Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
@@ -1214,7 +1218,7 @@ namespace ShoesDb2026.Consola
                 return;
             }
 
-            var brandResult=service.Delete(id);
+            var brandResult = service.Delete(id);
 
             if (brandResult.IsFailure)
             {
@@ -1237,7 +1241,7 @@ namespace ShoesDb2026.Consola
             var dto = new BrandCreateDto();
 
             Console.WriteLine("BRAND NAME: ");
-            dto.BrandName = Console.ReadLine()??"";
+            dto.BrandName = Console.ReadLine() ?? "";
             Console.WriteLine("IMAGE URL: ");
             dto.ImageUrl = Console.ReadLine();
 
@@ -1247,7 +1251,7 @@ namespace ShoesDb2026.Consola
             {
                 ShowErrors(result.Errors);
             }
-            else 
+            else
             {
                 Console.WriteLine();
                 Console.WriteLine("BRAND ADDED SUCCESSFULLY!");
@@ -1283,7 +1287,7 @@ namespace ShoesDb2026.Consola
 
         private static void ShowErrors(List<string> errors)
         {
-            foreach (var error in errors) 
+            foreach (var error in errors)
             {
                 Console.WriteLine(error);
             }
