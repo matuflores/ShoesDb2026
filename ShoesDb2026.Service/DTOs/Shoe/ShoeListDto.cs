@@ -12,6 +12,6 @@ namespace ShoesDb2026.Service.DTOs.Shoe
         public string BrandName { get; set; } = null!;
         public string SportName { get; set; } = null!;
         public string GenreName { get; set; } = null!;
-        //public decimal SizeNumber { get; set; }
+        public decimal SizeNumber { get; set; }
     }
 }

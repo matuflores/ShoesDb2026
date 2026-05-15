@@ -47,7 +47,7 @@ namespace ShoesDb2026.Service.Mappers
                 BrandName = shoe.Brand.BrandName,
                 SportName = shoe.Sport.SportName,
                 GenreName = shoe.Genre.GenreName,
-                //SizeNumber = shoe.Size.SizeNumber
+                SizeNumber = shoe.Size.SizeNumber
             };
         }
 

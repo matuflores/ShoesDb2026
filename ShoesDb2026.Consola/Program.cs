@@ -4,9 +4,11 @@ using ShoesDb2026.Entities;
 using ShoesDb2026.IoC;
 using ShoesDb2026.Service.Common;
 using ShoesDb2026.Service.DTOs.Brand;
+using ShoesDb2026.Service.DTOs.Shoe;
 using ShoesDb2026.Service.DTOs.Size;
 using ShoesDb2026.Service.DTOs.Sport;
 using ShoesDb2026.Service.Interfaces;
+using System.Net.WebSockets;
 
 namespace ShoesDb2026.Consola
 {
@@ -71,6 +73,7 @@ namespace ShoesDb2026.Consola
                     Console.WriteLine("3 - DELETE SHOE");
                     Console.WriteLine("4 - UPDATE SHOE");
                     Console.WriteLine("5 - DETAILS SHOE");
+                    Console.WriteLine("6 - FILTERS");
                     Console.WriteLine("0 - BACK");
 
                     Console.Write("SELECT OPTION: ");
@@ -80,28 +83,355 @@ namespace ShoesDb2026.Consola
                     switch (op)
                     {
                         case "1":
-                            //ListShoes(service);
+                            ListShoes(service);
                             break;
 
                         case "2":
-                            //AddSize(service);
+                            AddShoe(service, sizeService, sportService, brandService);
                             break;
 
                         case "3":
-                            //DeleteSize(service);
+                            DeleteShoe(service);
                             break;
 
                         case "4":
-                            //UpdateSize(service);
+                            UpdateShoe(service, sizeService, sportService, brandService);
                             break;
                         case "5":
-                            //DetailsShoes(service);
+                            DetailsShoes(service);
+                            break;
+                        case "6":
+                            //FiltersShoes(service, sizeService, sportService, brandService);
                             break;
                         case "0":
                             return;
                     }
 
                 } while (true);
+            }
+        }
+
+        private static void DetailsShoes(IShoeService service)
+        {
+            Console.Clear();
+            ShowShoes(service);
+            Console.WriteLine();
+            while (true)
+            {
+                Console.Write("SELECT ID SHOE TO VIEW DETAILS (0 TO QUIT): ");
+                int idSelect = int.Parse(Console.ReadLine()!);
+                var result = service.GetDetails(idSelect);
+                if (idSelect == 0) return;
+                if (result.IsFailure)
+                {
+                    ShowErrors(result.Errors);
+                    return;
+                }
+
+                var shoeDetails = result.Value!;
+                Console.WriteLine("------------------------------------------------------------------------------");
+                Console.WriteLine($"ID: {shoeDetails.ShoeId}");
+                Console.WriteLine($"MODEL: {shoeDetails.Model}");
+                Console.WriteLine($"DESCRIPTION: {shoeDetails.Description}");
+                Console.WriteLine($"PRICE: {shoeDetails.Price:C}");
+                Console.WriteLine($"BRAND: {shoeDetails.BrandName}");
+                Console.WriteLine($"SPORT: {shoeDetails.SportName}");
+                Console.WriteLine($"GENDER: {shoeDetails.GenreName}");
+                Console.WriteLine($"SIZE: {shoeDetails.SizeNumber}");
+                Console.WriteLine("------------------------------------------------------------------------------");
+
+                Console.WriteLine("DO YOU WANT TO MAKE NEW SELECTION? (Y/N)");
+                var response = Console.ReadLine();
+                if (response?.ToUpper() != "Y")
+                {
+                    break;
+                }
+            }
+            Console.ReadLine();
+        }
+
+        private static void UpdateShoe(IShoeService service, ISizeService sizeService, ISportService sportService, IBrandService brandService)
+        {
+            Console.Clear();
+            Console.WriteLine("UPDATE SHOE:");
+            ShowShoes(service);
+            Console.WriteLine();
+            Console.Write("SELECT ID SHOE TO UPDATE:");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+
+            var shoeUpdate = service.GetForUpdate(id);
+            if (shoeUpdate.IsFailure)
+            {
+                ShowErrors(shoeUpdate.Errors);
+                return;
+            }
+            var dto = shoeUpdate.Value!;
+            Console.WriteLine("------------------------------------------------------------------------------");
+            Console.WriteLine($"MODEL CURRENT: {dto.Model} ");
+            Console.Write("ENTER NEW MODEL: ");
+            var model=Console.ReadLine();
+            if(!string.IsNullOrWhiteSpace(model))
+            {
+                dto.Model = model;
+            }
+            Console.WriteLine("------------------------------------------------------------------------------");
+            Console.WriteLine($"GENDER CURRENT: {dto.GenreId}");
+            Console.WriteLine("GENDERS AVAILABLE:");
+            var genreResult = service.GetGenres();
+            if (genreResult.IsSuccess)
+            {
+                foreach (var genre in genreResult.Value!)
+                {
+                    Console.WriteLine($"ID: {genre.GenreId} -- Name: {genre.GenreName}");
+                }
+            }
+            Console.Write("SELECT NEW GENDER ID:");
+            if (!int.TryParse(Console.ReadLine(), out int genreId))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+            dto.GenreId = genreId;
+            Console.WriteLine("------------------------------------------------------------------------------");
+            Console.WriteLine($"BRAND ID CURRENT: {dto.BrandId}");
+            Console.WriteLine("BRANDS AVAILABLE:");
+            var brandResult = brandService.GetAll();
+            if (brandResult.IsSuccess)
+            {
+                foreach (var brand in brandResult.Value!)
+                {
+                    Console.WriteLine($"ID: {brand.BrandId} -- Name: {brand.BrandName}");
+                }
+            }
+            Console.Write("SELECT NEW BRAND ID:");
+            if (!int.TryParse(Console.ReadLine(), out int brandId))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+            dto.BrandId = brandId;
+            Console.WriteLine("------------------------------------------------------------------------------");
+            Console.WriteLine($"SPORT ID CURRENT: {dto.SportId}");
+            var sportResult = sportService.GetAll();
+            if (sportResult.IsSuccess)
+            {
+                foreach (var sport in sportResult.Value!)
+                {
+                    Console.WriteLine($"ID: {sport.SportId} -- Name: {sport.SportName}");
+                }
+            }
+            Console.Write("SELECT NEW SPORT ID:");
+            if (!int.TryParse(Console.ReadLine(), out int sportId))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+            dto.SportId = sportId;
+            Console.WriteLine("------------------------------------------------------------------------------");
+            Console.WriteLine($"DESCRIPTION CURRENT: {dto.Description}");
+            Console.Write("ENTER NEW DESCRIPTION: ");
+            var description = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(description))
+            {
+                dto.Description = description;
+            }
+            Console.WriteLine("------------------------------------------------------------------------------");
+            Console.WriteLine($"PRICE CURRENT: {dto.Price}");
+            Console.Write("ENTER NEW PRICE: ");
+            var priceInput = Console.ReadLine();
+            if (decimal.TryParse(priceInput, out decimal price))
+            {
+                dto.Price = price;
+            }
+            Console.WriteLine("------------------------------------------------------------------------------");
+            var result = service.Update(dto);
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+            }
+            else
+            {
+                Console.WriteLine("SHOE UPDATED SUCCESSFULLY!");
+            }
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadLine();
+        }
+
+        private static void DeleteShoe(IShoeService service)
+        {
+            Console.Clear();
+            Console.WriteLine("DELETE SHOE:");
+            ShowShoes(service);
+
+            Console.WriteLine("SELECT ID SHOE TO DELETE:");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+
+            Console.WriteLine("ARE YOU SURE TO DELETE SHOE? (Y/N)");
+            var confirm = Console.ReadLine();
+            if (confirm?.ToUpper() != "Y")
+            {
+                Console.WriteLine("DELETE CANCELLED!");
+                Console.ReadLine();
+                return;
+            }
+
+            var sizeResult = service.Delete(id);
+
+            if (sizeResult.IsFailure)
+            {
+                ShowErrors(sizeResult.Errors);
+            }
+            else
+            {
+                Console.WriteLine("SHOE DELETED SUCCESSFULLY!");
+            }
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadLine();
+        }
+
+        private static void AddShoe(IShoeService service, ISizeService sizeService, ISportService sportService, IBrandService brandService)
+        {
+            Console.Clear();
+            Console.WriteLine("ADD NEW SHOE:");
+
+            var newShoe = new ShoeCreateDto();
+
+            Console.WriteLine("MODEL:");
+            newShoe.Model = Console.ReadLine()!;
+
+            Console.WriteLine("SELECT GENDER TO LIST:");
+            var genreResult = service.GetGenres();
+            if (genreResult.IsSuccess) 
+            {
+                foreach (var genre in genreResult.Value!)
+                {
+                    Console.WriteLine($"ID: {genre.GenreId} -- Name: {genre.GenreName}");
+                }
+            }
+            Console.WriteLine("SELECT GENDER ID:");
+            if (!int.TryParse(Console.ReadLine(), out int genreId))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+            newShoe.GenreId = genreId;
+
+            Console.WriteLine("SELECT BRAND TO LIST:");
+            var brandResult = brandService.GetAll();
+            if (brandResult.IsSuccess)
+            {
+                foreach (var brand in brandResult.Value!)
+                {
+                    Console.WriteLine($"ID: {brand.BrandId} -- Name: {brand.BrandName}");
+                }
+            }
+            Console.WriteLine("SELECT BRAND ID:");
+            if (!int.TryParse(Console.ReadLine(), out int brandId))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+            newShoe.BrandId = brandId;
+
+            Console.WriteLine("SELECT SPORT TO LIST:");
+            var sportResult = sportService.GetAll();
+            if (sportResult.IsSuccess)
+            {
+                foreach (var sport in sportResult.Value!)
+                {
+                    Console.WriteLine($"ID: {sport.SportId} -- Name: {sport.SportName}");
+                }
+            }
+            Console.WriteLine("SELECT SPORT ID:");
+            if (!int.TryParse(Console.ReadLine(), out int sportId))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+            newShoe.SportId = sportId;
+
+            Console.WriteLine("SELECT SIZE TO LIST:");
+            var sizeResult = sizeService.GetAll();
+            if (sizeResult.IsSuccess)
+            {
+                foreach (var size in sizeResult.Value!)
+                {
+                    Console.WriteLine($"ID: {size.SizeId} -- Number: {size.SizeNumber}");
+                }
+            }
+            Console.WriteLine("SELECT SIZE ID:");
+            if (!int.TryParse(Console.ReadLine(), out int sizeId))
+            {
+                Console.WriteLine("INVALID ID!");
+                Console.ReadLine();
+                return;
+            }
+            newShoe.SizeId = sizeId;
+
+            Console.WriteLine("ADD THE PRICE:");
+            if (!decimal.TryParse(Console.ReadLine(), out decimal price))
+            {
+                Console.WriteLine("INVALID PRICE!");
+                Console.ReadLine();
+                return;
+            }
+            newShoe.Price = price;
+
+            Console.WriteLine("DESCRIPTION:");
+            newShoe.Description = Console.ReadLine()!;
+
+            var result = service.Add(newShoe);
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+
+            }
+            else
+            {
+                Console.WriteLine("SHOE ADDED SUCCESSFULLY!");
+            }
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadLine();
+        }
+
+        private static void ListShoes(IShoeService service)
+        {
+            Console.Clear();
+            Console.WriteLine("LIST OF SHOES:");
+            ShowShoes(service);
+            Console.WriteLine("PRESS ANY KEY TO CONTINUE...");
+            Console.ReadLine();
+        }
+
+        private static void ShowShoes(IShoeService service)
+        {
+            var shoeResult = service.GetAll();
+            if (shoeResult.IsFailure)
+            {
+                ShowErrors(shoeResult.Errors);
+                return;
+            }
+
+            var shoes = shoeResult.Value;
+            foreach (var shoe in shoes!)
+            {
+                Console.WriteLine($"ID: {shoe.ShoeId} -- Model: {shoe.Model} -- Brand: {shoe.BrandName} -- Sport: {shoe.SportName} -- Size: {shoe.SizeNumber} -- Price: {shoe.Price} ");
             }
         }
 
