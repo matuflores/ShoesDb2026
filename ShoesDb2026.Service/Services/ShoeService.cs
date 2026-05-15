@@ -99,7 +99,9 @@ namespace ShoesDb2026.Service.Services
 
         public Result<List<ShoeListDto>> GetByBrand(int brandId)
         {
-            var shoes=_uow.Shoes.GetByBrand(brandId).Select(ShoeMapper.ToListDto).ToList();
+            var shoes=_uow.Shoes.GetByBrand(brandId)
+                .Select(ShoeMapper.ToListDto)
+                .ToList();
             return Result<List<ShoeListDto>>.Success(shoes);
         }
 

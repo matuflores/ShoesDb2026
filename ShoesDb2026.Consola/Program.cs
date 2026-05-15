@@ -113,7 +113,88 @@ namespace ShoesDb2026.Consola
 
         private static void FiltersShoes(IShoeService service, ISizeService sizeService, ISportService sportService, IBrandService brandService)
         {
-            throw new NotImplementedException();
+            do
+            {
+                Console.Clear();
+
+                Console.WriteLine("SELECT FILTERS:");
+                Console.WriteLine("1 - FILTER BY BRAND");
+                Console.WriteLine("2 - FILTER BY SPORT");
+                Console.WriteLine("3 - FILTER BY SIZE");
+                Console.WriteLine();
+                Console.WriteLine("SELECT ORDER:");
+                Console.WriteLine("4 - ORDER BY MODEL");
+                Console.WriteLine("5 - ORDER BY PRICE");
+                Console.WriteLine("6 - ORDER BY BRAND");
+                Console.WriteLine();
+                Console.WriteLine("0 - BACK");
+
+                var op = Console.ReadLine();
+
+                switch (op)
+                {
+                    case "1":
+                        FilterByBrand(service, brandService);
+                        break;
+
+                    case "2":
+                        //FilterBySport(service, sportService);
+                        break;
+
+                    case "3":
+                        //FilterBySize(service, sizeService);
+                        break;
+
+                    case "4":
+                        //ShowOrderedByModel(service);
+                        break;
+
+                    case "5":
+                        //ShowOrderedByPrice(service);
+                        break;
+
+                    case "6":
+                        //ShowOrderedByBrand(service);
+                        break;
+
+                    case "0":
+                        return;
+                }
+
+            } while (true);
+        }
+
+        private static void FilterByBrand(IShoeService service, IBrandService brandService)
+        {
+            Console.Clear();
+            Console.WriteLine("FILTER SHOES BY BRAND:");
+            ShowBrands(brandService);
+
+            Console.Write("SELECT BRAND ID:");
+            int brandId = int.Parse(Console.ReadLine()!);
+            var result = service.GetByBrand(brandId);
+            if(result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+                return;
+            }
+            ShowShoesFilter(result.Value!);
+            Console.ReadLine();
+        }
+
+        private static void ShowShoesFilter(List<ShoeListDto> shoeListDtos)
+        {
+            
+            foreach (var shoe in shoeListDtos)
+            {
+                Console.WriteLine($"{"Id:",-10}{shoe.ShoeId}");
+                Console.WriteLine($"{"Model:",-10}{shoe.Model}");
+                Console.WriteLine($"{"Brand:",-10}{shoe.BrandName}");
+                Console.WriteLine($"{"Sport:",-10}{shoe.SportName}");
+                Console.WriteLine($"{"Size:",-10}{shoe.SizeNumber}");
+                Console.WriteLine($"{"Price:",-10}{shoe.Price:C}" );
+                Console.WriteLine("-----------------------------------------------------------------");
+            }
         }
 
         private static void DetailsShoes(IShoeService service)

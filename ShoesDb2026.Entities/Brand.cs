@@ -11,5 +11,7 @@ namespace ShoesDb2026.Entities
         public string BrandName { get; set; } = null!;
         public string? ImageUrl { get; set; }
         public bool Active { get; set; } = true;
+
+        public ICollection<Shoe> Shoes { get; set; } = new List<Shoe>();
     }
 }

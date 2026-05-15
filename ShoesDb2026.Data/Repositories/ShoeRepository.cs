@@ -48,7 +48,13 @@ namespace ShoesDb2026.Data.Repositories
 
         public List<Shoe> GetByBrand(int brandId)
         {
-            throw new NotImplementedException();
+            return _context.Shoes.Include(s => s.Brand)
+                    .Include(s => s.Size)
+                    .Include(s => s.Sport)
+                    .Include(s => s.Genre)
+                    .Where(s => s.BrandId == brandId && s.Active)
+                    .AsNoTracking()
+                    .ToList();
         }
 
         public Shoe? GetById(int id)
