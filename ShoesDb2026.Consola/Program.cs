@@ -168,6 +168,7 @@ namespace ShoesDb2026.Consola
         {
             Console.Clear();
             Console.WriteLine("FILTER SHOES BY BRAND:");
+            Console.WriteLine();
             ShowBrands(brandService);
 
             Console.Write("SELECT BRAND ID:");
