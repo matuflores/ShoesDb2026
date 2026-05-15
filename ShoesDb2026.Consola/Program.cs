@@ -101,7 +101,7 @@ namespace ShoesDb2026.Consola
                             DetailsShoes(service);
                             break;
                         case "6":
-                            //FiltersShoes(service, sizeService, sportService, brandService);
+                            FiltersShoes(service, sizeService, sportService, brandService);
                             break;
                         case "0":
                             return;
@@ -109,6 +109,11 @@ namespace ShoesDb2026.Consola
 
                 } while (true);
             }
+        }
+
+        private static void FiltersShoes(IShoeService service, ISizeService sizeService, ISportService sportService, IBrandService brandService)
+        {
+            throw new NotImplementedException();
         }
 
         private static void DetailsShoes(IShoeService service)
