@@ -8,6 +8,7 @@ using ShoesDb2026.Service.DTOs.Shoe;
 using ShoesDb2026.Service.DTOs.Size;
 using ShoesDb2026.Service.DTOs.Sport;
 using ShoesDb2026.Service.Interfaces;
+using ShoesDb2026.Service.Services;
 using System.Net.WebSockets;
 
 namespace ShoesDb2026.Consola
@@ -138,23 +139,23 @@ namespace ShoesDb2026.Consola
                         break;
 
                     case "2":
-                        //FilterBySport(service, sportService);
+                        FilterBySport(service, sportService);
                         break;
 
                     case "3":
-                        //FilterBySize(service, sizeService);
+                        FilterBySize(service, sizeService);
                         break;
 
                     case "4":
-                        //ShowOrderedByModel(service);
+                        OrderByModel(service);
                         break;
 
                     case "5":
-                        //ShowOrderedByPrice(service);
+                        OrderByPrice(service);
                         break;
 
                     case "6":
-                        //ShowOrderedByBrand(service);
+                        OrderByBrand(service);
                         break;
 
                     case "0":
@@ -164,6 +165,97 @@ namespace ShoesDb2026.Consola
             } while (true);
         }
 
+        private static void OrderByBrand(IShoeService service)
+        {
+            Console.Clear();
+            Console.WriteLine("ORDER SHOES BY BRAND:");
+            Console.WriteLine();
+
+            var result = service.OrderByBrand();
+
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+                return;
+            }
+            ShowShoesFilter(result.Value!);
+            Console.ReadLine();
+        }
+
+        private static void OrderByPrice(IShoeService service)
+        {
+            Console.Clear();
+            Console.WriteLine("ORDER SHOES BY PRICE:");
+            Console.WriteLine();
+
+            var result = service.OrderByPrice();
+
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+                return;
+            }
+            ShowShoesFilter(result.Value!);
+            Console.ReadLine();
+        }
+
+        private static void OrderByModel(IShoeService service)
+        {
+            Console.Clear();
+            Console.WriteLine("ORDER SHOES BY MODEL:");
+            Console.WriteLine();
+
+            var result = service.OrderByModel();
+
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+                return;
+            }
+            ShowShoesFilter(result.Value!);
+            Console.ReadLine();
+        }
+
+        private static void FilterBySize(IShoeService service, ISizeService sizeService)
+        {
+            Console.Clear();
+            Console.WriteLine("FILTER SHOES BY SIZE:");
+            Console.WriteLine();
+            ShowSizes(sizeService);
+
+            Console.Write("SELECT SIZE ID (0 TO QUIT):");
+            int sizeId = int.Parse(Console.ReadLine()!);
+            if (sizeId == 0) return;
+            var result = service.GetBySize(sizeId);
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+                return;
+            }
+            ShowShoesFilter(result.Value!);
+            Console.ReadLine();
+        }
+
+        private static void FilterBySport(IShoeService service, ISportService sportService)
+        {
+            Console.Clear();
+            Console.WriteLine("FILTER SHOES BY SPORT:");
+            Console.WriteLine();
+            ShowSports(sportService);
+
+            Console.Write("SELECT SPORT ID (0 TO QUIT):");
+            int sportId = int.Parse(Console.ReadLine()!);
+            if (sportId == 0) return;
+            var result = service.GetBySport(sportId);
+            if (result.IsFailure)
+            {
+                ShowErrors(result.Errors);
+                return;
+            }
+            ShowShoesFilter(result.Value!);
+            Console.ReadLine();
+        }
+
         private static void FilterByBrand(IShoeService service, IBrandService brandService)
         {
             Console.Clear();
@@ -171,8 +263,9 @@ namespace ShoesDb2026.Consola
             Console.WriteLine();
             ShowBrands(brandService);
 
-            Console.Write("SELECT BRAND ID:");
+            Console.Write("SELECT BRAND ID (0 TO QUIT):");
             int brandId = int.Parse(Console.ReadLine()!);
+            if (brandId == 0) return;
             var result = service.GetByBrand(brandId);
             if(result.IsFailure)
             {
